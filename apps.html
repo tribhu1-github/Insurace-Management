@@ -1,0 +1,40 @@
+<template>
+<lightning-card title="Searching Applicant by CreatedDate ">
+            <strong>&nbsp; Name of Agent : {userName}<BR/></strong>
+        &nbsp; <lightning-record-edit-form object-api-name="Applicant_Details__c">
+          <strong> <lightning-input type="Date" label="From Date" value={fromDate}></lightning-input></strong>
+          <strong> <lightning-input type="Date" label="To Date" value={toDate}></lightning-input></strong>
+            <lightning-button label="Search " variant="success" class="slds-align_absolute-center" onclick={searchButtonHandler}></lightning-button>
+        </lightning-record-edit-form>
+        
+        
+    </lightning-card>
+
+    <template lwc:if={showTable}>
+        
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+           
+            <span class="slds-assistive-text">Cancel and close</span>
+           
+            <div class="slds-modal__header">
+            </div>
+            <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                <lightning-datatable
+                hide-checkbox-column
+                key-field="Id"
+                data={appList}
+                columns={appColumns}    
+                draft-values={draftValues} 
+                > 
+                </lightning-datatable>
+    
+            </div>
+            <div class="slds-modal__footer">
+           
+            <button class="slds-button slds-button--destructive" onclick={closeButtonHandler}>Close</button>
+            </div>
+            </div>
+            </section>
+        </template>
+</template>

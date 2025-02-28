@@ -1,0 +1,50 @@
+public with sharing class ApplicantControllerProvider  {
+    @AuraEnabled(cacheable=true)
+    public static List<Applicant_Details__c> searchApplications(Date fromDate, Date toDate) {
+        // Implement the logic to query and return applications based on the date range
+        return [SELECT Id, DOB__c, CreatedDate FROM Applicant_Details__c WHERE CreatedDate >= :fromDate AND CreatedDate <= :toDate];
+    }
+
+        @AuraEnabled
+    public static String createNewAccount(Account objAcc){
+        insert objAcc;
+        return 'Your New Account has been created successfully...!!!';
+    }
+
+    @AuraEnabled
+    public static List<Account> searchAccounRecord(Account objAcc){
+        try {
+          return [select Id, Name, Rating, CreatedDate, SLA__c from Account where Name =: objAcc.Name];
+          
+        } catch (Exception e) {            
+            return null;
+            
+        }
+    }
+
+    @AuraEnabled
+    public static List<Account> searchAccounRecordType(Account objAcc){
+        try {
+          return [select Id, Name, Rating, CreatedDate, SLA__c, Type from Account where Type =: objAcc.Type];
+          
+        } catch (Exception e) {            
+            return null;
+            
+        }
+    }
+
+ @AuraEnabled
+    public static List<Applicant_Details__c> searchApplicantRecord(Applicant_Details__c objApp){
+    
+        try {
+          return [select Id, First_Name__c,Last_Name__c, DOB__c, CreatedDate, Gender__c from Applicant_Details__c where First_Name__c =: objApp.First_Name__c];
+          
+        } catch (Exception e) {            
+            return null;
+            
+        }
+    } 
+   
+
+
+}

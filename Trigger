@@ -1,1 +1,50 @@
+//Apex Trigger to Prevent Duplicate Document for an Applicant .
 
+trigger DocumentDetailsTrigger on Document_Details__c (Before Insert,before Update,after Undelete){
+   //Create a Set of Applicant  Ids.
+     Set<Id> appIdSet = new Set<Id> ();
+    
+    if(trigger.isInsert || trigger.isUpdate || trigger.isUndelete){
+        for(Document_Details__c objDoc : trigger.new ){
+            if(trigger.isInsert || trigger.isUndelete){
+            appIdSet.add(objDoc.Applicant__c);
+            } 
+            
+            if(trigger.isUpdate){      
+           if((objDoc.Applicant__c != trigger.oldMap.get(objDoc.Id).Applicant__c)||
+               (objDoc.Select_Identity_Proof_Documents__c!=trigger.oldMap.get(objDoc.Id).Select_Identity_Proof_Documents__c)){
+                appIdSet.add(objDoc.Applicant__c); 
+           System.debug('Inside The Set'); 
+           
+            }
+        }    
+        }
+    }
+
+//Create a Parent Map
+Map<Id,Applicant_Details__c> appMap = new Map<Id,Applicant_Details__c>();
+    if(!appIdSet.isEmpty()){
+    for(Applicant_Details__c objApp : [select Id, Driving_License_Number__c,(select Id,Select_Identity_Proof_Documents__c from Documents_Details__r) from Applicant_Details__c where Id IN :appIdSet]){
+      appMap.put(objApp.id,objApp);  
+   System.debug('>>>>>>>>>>>>>>>>>>>>>>Map Runs'+appMap);
+    }   
+    }
+  if(trigger.isInsert || trigger.isUpdate || trigger.isUndelete){
+     if(!appMap.isEmpty()){  //null cheak 
+     for(Document_Details__c objDoc : trigger.new ){
+         if(appMap.containsKey(objDoc.Applicant__c)){  // Cheak for containsKey
+             
+        List<Document_Details__c> docList = appMap.get(objDoc.Applicant__c).Documents_Details__r;
+             for(Document_Details__c objdocList : docList){
+                 if(objDoc.Select_Identity_Proof_Documents__c == objdocList.Select_Identity_Proof_Documents__c){
+  //adding Error.        
+objDoc.Select_Identity_Proof_Documents__c.addError(objDoc.Select_Identity_Proof_Documents__c+'The Only one Driving License for the Applicant Record is Available ' ); 
+             System.debug('>>>>>>>>>>>>>>>>>>>>>>Trigger Runs');        
+                   }
+                 }
+               }
+             }       
+           }
+
+        }
+      }

@@ -1,0 +1,35 @@
+<template>
+    <lightning-card style="color:blue" title="Search Applicants" icon-name=custom:custom69>
+
+ 
+
+       <lightning-badge  class="slds-align_absolute-center"
+
+
+  label="Applicants" icon-name="custom:custom11"></lightning-badge>
+     
+        <div class="slds-p-around_medium">
+            <lightning-input type="date" label="Start Date" value={startDate} onchange={handleStartDateChange}></lightning-input>
+            <lightning-input type="date" label="End Date" value={endDate} onchange={handleEndDateChange}></lightning-input>
+            <br>
+            <lightning-button class="slds-align_absolute-center" variant="destructive" label="Search" onclick={handleSearch}></lightning-button>
+        </div>
+ 
+        <template if:true={applicants}>
+            <lightning-datatable
+                key-field="id"
+                data={applicants}
+                columns={columns}
+                hide-checkbox-column="true">
+            </lightning-datatable>
+       
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-text-color_error">
+                {error}
+            </div>
+             
+        </template>
+    </lightning-card>
+</template>
